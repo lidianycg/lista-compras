@@ -8,14 +8,14 @@
     </div>
     <div class="login-form">
       <img src="@/assets/logo.svg" alt="" class="logo" />
-      <h3>Entrar</h3>
+      <h3>Cadastrar</h3>
       <div class="login-form">
         <input type="email" placeholder="Email" v-model="email" />
         <input type="password" placeholder="Senha" v-model="password" />
-        <button @click="handleSignIn()">Entrar</button>
+        <button @click="handleSignUp()">Cadastrar</button>
         <div class="sign-up">
-          <p>Não tem uma conta?</p>
-          <button @click="handleSignUp()">Cadastrar</button>
+          <p>Já tem uma conta?</p>
+          <button @click="handleSignIn()">Entre aqui!</button>
         </div>
       </div>
     </div>
@@ -25,23 +25,24 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { signIn } from '@/services/auth.service'
+import { signUp } from '@/services/auth.service'
 
 const router = useRouter()
 const email = ref('')
 const password = ref('')
 
 async function handleSignUp() {
-  router.push('/signup')
+  try {
+    const user = await signUp(email.value, password.value)
+    console.log('Usuário criado:', user)
+    // Aqui você pode redirecionar ou fazer outra ação
+  } catch (error) {
+    alert('Erro ao criar usuário: ' + error)
+  }
 }
 
 async function handleSignIn() {
-  try {
-    await signIn(email.value, password.value)
-    router.push('/shopping-list')
-  } catch (error) {
-    alert('Erro ao fazer login: ' + error)
-  }
+  router.push('/login')
 }
 </script>
 

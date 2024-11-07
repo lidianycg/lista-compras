@@ -28,22 +28,24 @@
     <div class="list">
       <ul>
         <li v-for="(item, index) in shoppingList" :key="index">
-          <span>{{ item.name }} - {{ item.quantity }}</span>
+          <span class="item-name">{{ item.name }}</span>
 
-          <button @click="increaseQuantity(index)" class="increase-button">
-            +
-          </button>
-          <button
-            @click="decreaseQuantity(index)"
-            :disabled="item.quantity <= 1"
-            class="decrease-button"
-          >
-            -
-          </button>
-
-          <button @click="removeItem(index)" class="remove-button">
-            Remover
-          </button>
+          <div class="actions">
+            <button
+              @click="decreaseQuantity(index)"
+              :disabled="item.quantity <= 1"
+              class="decrease button"
+            >
+              <span class="material-symbols-outlined">remove</span>
+            </button>
+            <span>{{ item.quantity }}</span>
+            <button @click="increaseQuantity(index)" class="increase button">
+              <span class="material-symbols-outlined">add</span>
+            </button>
+            <button @click="removeItem(index)" class="remove button">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
         </li>
       </ul>
     </div>
@@ -99,6 +101,11 @@ const addItem = () => {
 const selectSuggestion = (name: string) => {
   newItemName.value = name
   suggestions.value = []
+  shoppingList.value.push({
+    name,
+    quantity: newItemQuantity.value,
+  })
+  newItemName.value = ''
 }
 
 const increaseQuantity = (index: number) => {
@@ -112,6 +119,8 @@ const decreaseQuantity = (index: number) => {
 }
 
 const removeItem = (index: number) => {
+  const confirm = window.confirm('Deseja remover este item?')
+  if (!confirm) return
   shoppingList.value.splice(index, 1)
 }
 
@@ -186,23 +195,37 @@ const exportToWhatsapp = () => {
         padding: 8px;
         border-bottom: 1px solid #ccc;
 
-        .increase-button,
-        .decrease-button,
-        .remove-button {
-          padding: 4px;
-          border-radius: 4px;
-          background-color: #6c63ff;
-          color: white;
-          border: none;
-          cursor: pointer;
+        .item-name {
+          flex: 1;
         }
 
-        .decrease-button {
-          background-color: #ccc;
-        }
+        .actions {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          margin-left: 8px;
+          .button {
+            padding: 4px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            background-color: transparent;
+          }
 
-        .remove-button {
-          background-color: #ff4d4d;
+          .increase {
+            color: #6c63ff;
+          }
+
+          .decrease {
+            color: #222222;
+            &:disabled {
+              color: #ccc;
+            }
+          }
+
+          .remove {
+            color: #f8583c;
+          }
         }
       }
     }
